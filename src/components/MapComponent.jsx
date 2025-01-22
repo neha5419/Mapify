@@ -1,6 +1,16 @@
 import React from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+
+// Fix for missing default icons
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
 
 function MapComponent({ selectedProfile }) {
   const indiaCenter = [20.5937, 78.9629];
@@ -9,6 +19,11 @@ function MapComponent({ selectedProfile }) {
   const profileLocation = selectedProfile
     ? [selectedProfile.latitude, selectedProfile.longitude]
     : indiaCenter;
+
+  console.log("Selected Profile Coordinates:", {
+    latitude: selectedProfile?.latitude,
+    longitude: selectedProfile?.longitude,
+  });
 
   return (
     <MapContainer
@@ -23,9 +38,7 @@ function MapComponent({ selectedProfile }) {
       {selectedProfile &&
         selectedProfile.latitude &&
         selectedProfile.longitude && (
-          <Marker
-            position={[selectedProfile.latitude, selectedProfile.longitude]}
-          >
+          <Marker position={[selectedProfile.latitude, selectedProfile.longitude]}>
             <Popup>
               <strong>{selectedProfile.name}</strong> <br />
               {selectedProfile.address}
